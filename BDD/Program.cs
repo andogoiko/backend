@@ -28,16 +28,8 @@ namespace BDD
         {
             var database = "BDD06Andoitz"; 
             connString = $"Server=185.60.40.210\\SQLEXPRESS,58015;Database={database};User Id=sa;Password=Pa88word;MultipleActiveResultSets=true";
-            //connString = $"Server=(localdb)\\mssqllocaldb;Database=Mierda;Trusted_Connection=True;MultipleActiveResultSets=true";
+            //connString = $"Server=(localdb)\\mssqllocaldb;Database=PluebasDeKaka;Trusted_Connection=True;MultipleActiveResultSets=true";
         }
-
-        // protected override void OnModelCreating(ModelBuilder modelBuilder)
-        // {
-        //     modelBuilder.Entity<Localidades>().HasIndex(m => new
-        //     {
-
-        //     }).IsUnique();
-        // }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer(connString);
