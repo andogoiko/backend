@@ -10,5 +10,4 @@ public class ZonasRegion
         [Key]
         public string Zona { get; set; }
 
-        public List<Localidades> Localidades { get; set; }
     }

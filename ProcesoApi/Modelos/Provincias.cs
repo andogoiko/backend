@@ -10,5 +10,4 @@ public class Provincias
         [Key]
         public string Provincia { get; set; }
 
-        public List<Localidades> Localidades { get; set; }
     }

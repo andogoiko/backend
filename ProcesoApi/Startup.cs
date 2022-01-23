@@ -20,16 +20,20 @@ namespace ProcesoApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //connString = "Server=(localdb)\\mssqllocaldb;Database=localBDDProyecto;MultipleActiveResultSets=true";
             connString = "Server=185.60.40.210\\SQLEXPRESS,58015;Database=BDD06Andoitz;User Id=sa;Password=Pa88word;MultipleActiveResultSets=true";
         }
 
         public IConfiguration Configuration { get; }
+        public string connString { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors();
             services.AddControllers();
+            services.AddScoped<BaseTempoContext>();  
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProcesoApi", Version = "v1" });

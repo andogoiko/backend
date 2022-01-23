@@ -17,8 +17,5 @@ public class Localidades
 
         [Required, ForeignKey("ZonasRegion")]
         public string Zona { get; set; }
-        public ZonasRegion ZonasRegion { get; set; }
-
-        public Provincias Provincias { get; set; }
 
     }
