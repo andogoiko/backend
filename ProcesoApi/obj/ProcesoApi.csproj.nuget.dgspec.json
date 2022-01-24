@@ -1,31 +1,111 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj": {}
+    "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj": {
+    "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
-        "projectName": "ProcesoApi",
-        "projectPath": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
-        "packagesPath": "C:\\Users\\Ando\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\obj\\",
+        "projectUniqueName": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj",
+        "projectName": "BDD",
+        "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj",
+        "packagesPath": "C:\\Users\\2daw3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Ando\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\2daw3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
+        "projectName": "ProcesoApi",
+        "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
+        "packagesPath": "C:\\Users\\2daw3\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\2daw3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj": {
+                "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -75,7 +155,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

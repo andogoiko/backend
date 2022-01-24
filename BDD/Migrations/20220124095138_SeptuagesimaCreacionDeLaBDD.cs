@@ -2,7 +2,7 @@
 
 namespace BDD.Migrations
 {
-    public partial class BDDdecimoseptimointento : Migration
+    public partial class SeptuagesimaCreacionDeLaBDD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,25 +18,14 @@ namespace BDD.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ZonasRegion",
-                columns: table => new
-                {
-                    Zona = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ZonasRegion", x => x.Zona);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Localidades",
                 columns: table => new
                 {
                     Localidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Baliza = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitud = table.Column<double>(type: "float", nullable: true),
                     Longitud = table.Column<double>(type: "float", nullable: true),
-                    Provincia = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Zona = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Provincia = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,12 +35,6 @@ namespace BDD.Migrations
                         column: x => x.Provincia,
                         principalTable: "Provincias",
                         principalColumn: "Provincia",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Localidades_ZonasRegion_Zona",
-                        column: x => x.Zona,
-                        principalTable: "ZonasRegion",
-                        principalColumn: "Zona",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -80,11 +63,6 @@ namespace BDD.Migrations
                 name: "IX_Localidades_Provincia",
                 table: "Localidades",
                 column: "Provincia");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Localidades_Zona",
-                table: "Localidades",
-                column: "Zona");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -97,9 +75,6 @@ namespace BDD.Migrations
 
             migrationBuilder.DropTable(
                 name: "Provincias");
-
-            migrationBuilder.DropTable(
-                name: "ZonasRegion");
         }
     }
 }

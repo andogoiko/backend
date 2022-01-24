@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDD.Migrations
 {
     [DbContext(typeof(BaseTempoContext))]
-    [Migration("20220121185733_BDDdecimoseptimointento")]
-    partial class BDDdecimoseptimointento
+    [Migration("20220124095138_SeptuagesimaCreacionDeLaBDD")]
+    partial class SeptuagesimaCreacionDeLaBDD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,9 @@ namespace BDD.Migrations
                     b.Property<string>("Localidad")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Baliza")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double?>("Latitud")
                         .HasColumnType("float");
 
@@ -36,15 +39,9 @@ namespace BDD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Zona")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Localidad");
 
                     b.HasIndex("Provincia");
-
-                    b.HasIndex("Zona");
 
                     b.ToTable("Localidades");
                 });
@@ -81,16 +78,6 @@ namespace BDD.Migrations
                     b.ToTable("TemporalLocalidades");
                 });
 
-            modelBuilder.Entity("BDD.ZonasRegion", b =>
-                {
-                    b.Property<string>("Zona")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Zona");
-
-                    b.ToTable("ZonasRegion");
-                });
-
             modelBuilder.Entity("BDD.Localidades", b =>
                 {
                     b.HasOne("BDD.Provincias", "Provincias")
@@ -99,15 +86,7 @@ namespace BDD.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDD.ZonasRegion", "ZonasRegion")
-                        .WithMany("Localidades")
-                        .HasForeignKey("Zona")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Provincias");
-
-                    b.Navigation("ZonasRegion");
                 });
 
             modelBuilder.Entity("BDD.TemporalLocalidades", b =>
@@ -122,11 +101,6 @@ namespace BDD.Migrations
                 });
 
             modelBuilder.Entity("BDD.Provincias", b =>
-                {
-                    b.Navigation("Localidades");
-                });
-
-            modelBuilder.Entity("BDD.ZonasRegion", b =>
                 {
                     b.Navigation("Localidades");
                 });

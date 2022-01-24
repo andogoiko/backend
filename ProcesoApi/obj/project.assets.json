@@ -440,6 +440,18 @@
           "build/netcoreapp3.0/Microsoft.EntityFrameworkCore.Design.props": {}
         }
       },
+      "Microsoft.EntityFrameworkCore.InMemory/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "5.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.1/Microsoft.EntityFrameworkCore.InMemory.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.EntityFrameworkCore.InMemory.dll": {}
+        }
+      },
       "Microsoft.EntityFrameworkCore.Relational/5.0.0": {
         "type": "package",
         "dependencies": {
@@ -2072,6 +2084,21 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "BDD/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.InMemory": "5.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "5.0.0",
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/BDD.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BDD.dll": {}
+        }
       }
     }
   },
@@ -2669,6 +2696,20 @@
         "lib/netstandard2.1/Microsoft.EntityFrameworkCore.Design.xml",
         "microsoft.entityframeworkcore.design.5.0.0.nupkg.sha512",
         "microsoft.entityframeworkcore.design.nuspec"
+      ]
+    },
+    "Microsoft.EntityFrameworkCore.InMemory/5.0.0": {
+      "sha512": "4p98EdOJXs56nr7N+UjKvwEhAMs0uiJnJjXFSgpiaq9ZbAa5PEMklC0Q6yDEg6I5B4/GvVgb5vMhjn6P2t15Bg==",
+      "type": "package",
+      "path": "microsoft.entityframeworkcore.inmemory/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/netstandard2.1/Microsoft.EntityFrameworkCore.InMemory.dll",
+        "lib/netstandard2.1/Microsoft.EntityFrameworkCore.InMemory.xml",
+        "microsoft.entityframeworkcore.inmemory.5.0.0.nupkg.sha512",
+        "microsoft.entityframeworkcore.inmemory.nuspec"
       ]
     },
     "Microsoft.EntityFrameworkCore.Relational/5.0.0": {
@@ -7272,10 +7313,16 @@
         "system.xml.xmlserializer.4.3.0.nupkg.sha512",
         "system.xml.xmlserializer.nuspec"
       ]
+    },
+    "BDD/1.0.0": {
+      "type": "project",
+      "path": "../BDD/BDD.csproj",
+      "msbuildProject": "../BDD/BDD.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
+      "BDD >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 5.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 5.0.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 5.0.0",
@@ -7283,30 +7330,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ando\\.nuget\\packages\\": {}
+    "C:\\Users\\2daw3\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
+      "projectUniqueName": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
       "projectName": "ProcesoApi",
-      "projectPath": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
-      "packagesPath": "C:\\Users\\Ando\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ando\\Desktop\\AndoProyecto2\\ProcesoApi\\obj\\",
+      "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
+      "packagesPath": "C:\\Users\\2daw3\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Ando\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\2daw3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj": {
+              "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -7356,7 +7409,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

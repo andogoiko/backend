@@ -1,4 +1,5 @@
 using System;
+using BDD;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace ProcesoApi
 
             services.AddCors();
             services.AddControllers();
-            services.AddScoped<BaseTempoContext>();  
+            services.AddScoped<BaseTempoContext>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProcesoApi", Version = "v1" });
