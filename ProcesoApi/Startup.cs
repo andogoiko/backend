@@ -22,7 +22,7 @@ namespace ProcesoApi
         {
             Configuration = configuration;
             //connString = "Server=(localdb)\\mssqllocaldb;Database=localBDDProyecto;MultipleActiveResultSets=true";
-            connString = "Server=185.60.40.210\\SQLEXPRESS,58015;Database=BDD06Andoitz;User Id=sa;Password=Pa88word;MultipleActiveResultSets=true";
+            connString = "Server=185.60.40.210\\SQLEXPRESS,58015;Database=DD06Andoitz;User Id=sa;Password=Pa88word;MultipleActiveResultSets=true";
         }
 
         public IConfiguration Configuration { get; }

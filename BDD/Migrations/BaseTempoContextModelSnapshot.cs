@@ -25,6 +25,7 @@ namespace BDD.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Baliza")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Latitud")

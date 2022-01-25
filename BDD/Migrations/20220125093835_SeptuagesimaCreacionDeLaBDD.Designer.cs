@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDD.Migrations
 {
     [DbContext(typeof(BaseTempoContext))]
-    [Migration("20220124095138_SeptuagesimaCreacionDeLaBDD")]
+    [Migration("20220125093835_SeptuagesimaCreacionDeLaBDD")]
     partial class SeptuagesimaCreacionDeLaBDD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,7 @@ namespace BDD.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Baliza")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Latitud")

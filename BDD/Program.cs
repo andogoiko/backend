@@ -25,7 +25,7 @@ namespace BDD
 
         public BaseTempoContext()
         {
-            var database = "BDD06Andoitz";
+            var database = "DB06Andoitz";
             connString = $"Server=185.60.40.210\\SQLEXPRESS,58015;Database={database};User Id=sa;Password=Pa88word;MultipleActiveResultSets=true";
             //connString = $"Server=(localdb)\\mssqllocaldb;Database=PluebasDeKaka;Trusted_Connection=True;MultipleActiveResultSets=true";
         }
@@ -48,7 +48,7 @@ namespace BDD
     {
         [Key]
         public string Localidad { get; set; }
-
+        [Required(AllowEmptyStrings = false)]
         public string Baliza { get; set; }
         public double? Latitud { get; set; }
         public double? Longitud { get; set; }
