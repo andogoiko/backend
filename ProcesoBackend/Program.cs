@@ -44,12 +44,28 @@ namespace ProcesoBackend
 
                 /* APIs */
 
+
+
+
                 var APILocalidades = "https://www.euskalmet.euskadi.eus/vamet/stations/stationList/stationList.json";
                 var DeserialApiLocalidades = await LecturaApi(APILocalidades, _cliente);
 
                 var balizas = PushLocalidades(DeserialApiLocalidades);
 
+                using (var db = new BaseTempoContext())
+                {
+                    try
+                    {
+                        if (db.Localidades.Where(l => true).Count() == 0)
+                        {
+                            Console.Write("F");
+                        }
+                    }
+                    catch (Exception uwu)
+                    {
 
+                    }
+                }
                 /* cada vez que se extraigan los datos, habrá una espera de 10 minutos*/
 
                 Thread.Sleep(countdown);
@@ -86,13 +102,13 @@ namespace ProcesoBackend
                 Console.Write("latitud (y): " + localidad.y + "\n");
                 Console.Write("longitud (x): " + localidad.x + "\n");
                 Console.Write("\n\n/=============/\n\n");
-                Balizas.Add(new BalizLoc { Baliza = "Ball", Localidad = "Hello" });
+                Balizas.Add(new BalizLoc { Baliza = $"{localidad.id}", Localidad = $"{localidad.name}" });
 
             }
 
             return Balizas;
         }
 
-        /* función que nitroduce los datos de las balizas en la BDD*/
+        /* función que introduce los datos de las balizas en la BDD*/
     }
 }
