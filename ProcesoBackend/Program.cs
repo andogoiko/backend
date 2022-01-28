@@ -42,30 +42,23 @@ namespace ProcesoBackend
 
                 _cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                /* APIs */
-
-
-
+                /* API localidades */
 
                 var APILocalidades = "https://www.euskalmet.euskadi.eus/vamet/stations/stationList/stationList.json";
                 var DeserialApiLocalidades = await LecturaApi(APILocalidades, _cliente);
 
                 var balizas = PushLocalidades(DeserialApiLocalidades);
 
-                using (var db = new BaseTempoContext())
-                {
-                    try
-                    {
-                        if (db.Localidades.Where(l => true).Count() == 0)
-                        {
-                            Console.Write("F");
-                        }
-                    }
-                    catch (Exception uwu)
-                    {
+                /* API balizas */
 
-                    }
-                }
+
+                /* foreach (var baliza in balizas)
+                 {
+                     var APIBalizas = $"https://www.euskalmet.euskadi.eus/vamet/stations/readings/{baliza.Baliza}/2022/01/22/readingsData.json";
+                     //var DeserialApiBalizas = await LecturaApi(APIBalizas, _cliente);
+
+                 }*/
+
                 /* cada vez que se extraigan los datos, habrá una espera de 10 minutos*/
 
                 Thread.Sleep(countdown);
@@ -94,21 +87,81 @@ namespace ProcesoBackend
 
             /* recorremos todas las localidades */
             var i = 0;
-            foreach (var localidad in datosLocali)
-            {
-                Console.Write("Provincia: " + localidad.province + "\n");
-                Console.Write("Localidad: " + localidad.name + "\n");
-                Console.Write("baliza: " + localidad.id + "\n");
-                Console.Write("latitud (y): " + localidad.y + "\n");
-                Console.Write("longitud (x): " + localidad.x + "\n");
-                Console.Write("\n\n/=============/\n\n");
-                Balizas.Add(new BalizLoc { Baliza = $"{localidad.id}", Localidad = $"{localidad.name}" });
 
+            using (var db = new BaseTempoContext())
+            {
+                try
+                {
+
+                    foreach (var localidad in datosLocali)
+                    {
+
+                        /* comprobamos si alguna provincia está faltante */
+
+                        string data = localidad.province;
+                        var DataExists = db.Provincias.Any(p => p.Provincia == data);
+
+                        /* en caso de que falte la añadimos a la db */
+
+                        if (!DataExists)
+                        {
+                            if (data != "Navarra" && data != "Burgos")
+                            {
+                                Console.Write("Actualizando la base de datos\n");
+
+                                var AddProvincia = new Provincias { Provincia = localidad.province };
+                                db.Provincias.Add(AddProvincia);
+                                db.SaveChanges();
+
+                                Console.Write("Base de datos actualizada\n");
+                            }
+                        }
+
+                        /* comprobamos si alguna localidad está faltante */
+
+                        data = localidad.municipality;
+                        DataExists = db.Localidades.Any(p => p.Localidad == data);
+
+                        /* en caso de que falte la añadimos a la db */
+
+                        if (!DataExists)
+                        {
+
+                            if (localidad.province != "Navarra" && localidad.province != "Burgos")
+                            {
+                                Console.Write("Actualizando la base de datos\n");
+
+                                var AddLocalidad = new Localidades { Localidad = localidad.municipality, Baliza = localidad.id, Latitud = localidad.y, Longitud = localidad.x, Provincia = localidad.province };
+                                db.Localidades.Add(AddLocalidad);
+                                db.SaveChanges();
+
+                                Console.Write("Base de datos actualizada\n");
+
+                            }
+                        }
+
+                        /* Añadiendo los datos necesarios al array que devolvemos */
+
+                        Balizas.Add(new BalizLoc { Baliza = $"{localidad.id}", Localidad = $"{localidad.name}" });
+
+
+                    }
+
+                }
+                catch (Exception uwu)
+                {
+                    Console.Write("Ha ocurrido un error, contacte con su proveedor por favor.");
+                }
             }
 
             return Balizas;
         }
 
         /* función que introduce los datos de las balizas en la BDD*/
+        static void PushTemp(dynamic datosBalizas)
+        {
+
+
+        }
     }
 }
