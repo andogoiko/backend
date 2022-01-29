@@ -67,6 +67,7 @@ namespace BDD
         public string Localidad { get; set; }
         public double? Temperatura { get; set; }
         public double? VelViento { get; set; }
+        public double? VelVientoMax { get; set; }
         public double? Precipitaciones { get; set; }
         public double? Humedad { get; set; }
 
