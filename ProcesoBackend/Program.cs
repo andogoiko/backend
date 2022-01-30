@@ -15,21 +15,13 @@ using System.ComponentModel;
 
 namespace ProcesoBackend
 {
-
-    class BalizLoc
-    {
-        public string Baliza { get; set; }
-        public string Localidad { get; set; }
-    }
-
     class datosBaliza
     {
         public string Localidad { get; set; }
-        public string velocidad { get; set; }
-        public string velocidadMax { get; set; }
-        public string temperatura { get; set; }
-        public string humedad { get; set; }
-        public string precipitacion { get; set; }
+        public string Estado { get; set; }
+        public string Temperatura { get; set; }
+        public string Humedad { get; set; }
+        public string VelViento { get; set; }
     }
 
     class Program
@@ -38,6 +30,10 @@ namespace ProcesoBackend
         {
 
             Console.WriteLine("Comenzarem Prugrama");
+
+            /* token para extraer los datos de las balizas*/
+
+            const string token = "2f5f8474748c502e0906396fc69be329";
 
             /* cuenta atras de 10 minutos */
 
@@ -55,31 +51,26 @@ namespace ProcesoBackend
 
                 _cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                /* API localidades */
+                /* API localidades (euskalmet) */
 
                 var APILocalidades = "https://www.euskalmet.euskadi.eus/vamet/stations/stationList/stationList.json";
                 var DeserialApiLocalidades = await LecturaApi(APILocalidades, _cliente);
 
                 Console.Write("Actualizando la base de datos\n");
 
-                List<BalizLoc> balizas = PushLocalidades(DeserialApiLocalidades);
+                List<String> balizas = PushLocalidades(DeserialApiLocalidades);
 
-                /* API balizas */
+                /* API balizas (openweather) */
 
                  foreach (var baliza in balizas)
                  {
-                     var APIBalizas = $"https://www.euskalmet.euskadi.eus/vamet/stations/readings/{baliza.Baliza}/{getThisYear()}/{getThisMonth()}/{getToday()}/readingsData.json";
+                     var APIBalizas = $"http://api.openweathermap.org/data/2.5/weather?q={baliza}&appid={token}";
                      
                      try{
 
                         var DeserialApiBalizas = await LecturaApi(APIBalizas, _cliente);
 
-                        var _baliza = new BalizLoc();
-
-                        _baliza.Baliza = baliza.Baliza;
-                        _baliza.Localidad = baliza.Localidad;
-
-                        PushMediciones(DeserialApiBalizas, _baliza);
+                        PushMediciones(DeserialApiBalizas, baliza);
 
                      }catch(Exception awa){
 
@@ -91,8 +82,7 @@ namespace ProcesoBackend
 
                 /* Creando una lista de string sin localidades duplicadas */
 
-                List<string> noDupeBalizas = balizas.Select(loc => loc.Localidad)
-                                            .Distinct()
+                List<string> noDupeBalizas = balizas.Distinct()
                                             .ToList();
 
                 cleanDB(noDupeBalizas);
@@ -126,10 +116,10 @@ namespace ProcesoBackend
 
         /* función para introducir localidades en la BDD y a su vez devuelve un array de balizas */
 
-        static List<BalizLoc> PushLocalidades(dynamic datosLocali)
+        static List<String> PushLocalidades(dynamic datosLocali)
         {
 
-            List<BalizLoc> Balizas = new List<BalizLoc>();
+            List<String> Balizas = new List<String>();
 
             /* recorremos todas las localidades */
 
@@ -172,12 +162,12 @@ namespace ProcesoBackend
 
                             /* Añadiendo los datos necesarios al array que devolvemos */
 
-                            Balizas.Add(new BalizLoc { Baliza = $"{localidad.id}", Localidad = $"{localidad.municipality}" });
+                            Balizas.Add(Convert.ToString(localidad.municipality));
 
                             if (!DataExists)
                             {
 
-                                var AddLocalidad = new Localidades { Localidad = localidad.municipality, Baliza = localidad.id, Latitud = localidad.y, Longitud = localidad.x, Provincia = localidad.province };
+                                var AddLocalidad = new Localidades { Localidad = localidad.municipality, Latitud = localidad.y, Longitud = localidad.x, Provincia = localidad.province };
                                 db.Localidades.Add(AddLocalidad);
                                 db.SaveChanges();
 
@@ -201,17 +191,16 @@ namespace ProcesoBackend
         }
 
         /* función que introduce los datos de las balizas en la BDD */
-        static void PushMediciones(dynamic datosBalizas, BalizLoc baliza)
+        static void PushMediciones(dynamic datosBalizas, string baliza)
         {
 
             var mediciones = new datosBaliza();
 
             mediciones.Localidad = null;
-            mediciones.temperatura = null;
-            mediciones.velocidad = null;
-            mediciones.velocidadMax = null;
-            mediciones.humedad = null;
-            mediciones.precipitacion = null;
+            mediciones.Estado = null;
+            mediciones.Temperatura = null;
+            mediciones.VelViento = null;
+            mediciones.Humedad = null;
 
             using (var db = new BaseTempoContext())
             {
@@ -219,84 +208,64 @@ namespace ProcesoBackend
 
                     foreach (var tipoMedicion in datosBalizas)
                     {
-                        foreach (var tipo in tipoMedicion)
-                        {
 
-                            /* recogemos el objeto que contiene los datos de unas mediciones específicas (puede ser temperatura, viento, etc según la iteración del foreach)*/
-
-                            JObject objDatosHora = JObject.Parse(tipo["data"].ToString());
-
-                            /* Recogemos las propiedades que tiene este objeto en una lista de strings*/
-
-                            IList<string> propiedades = objDatosHora.Properties().Select(p => p.Name).ToList(); // https://www.newtonsoft.com/json/help/html/M_Newtonsoft_Json_Linq_JObject_Properties.htm
-
-                            /* recogemos la 1ª propiedad en un objeto, que es la que contiene las mediciones */
-
-                            JObject JsonMediciones = JObject.Parse(objDatosHora[propiedades[0]].ToString());
-
-                            /* convertimos a lista el objeto con las mediciones */
-
-                            List<string> lMediciones = JsonMediciones.Properties().Select(p => p.Name).ToList();
-
-                            /* ordenamos la lista */
-
-                            lMediciones.Sort();
-
-                            /* guardando los datos */
-
-                            switch (tipo.name.ToString()) 
+                        switch (tipoMedicion.Name.ToString()) 
                             {
-                                case "mean_speed":
+                                case "weather":
 
-                                    /* obtenemos la última medición de la media del viento y guardamos el dato */
-                                    
-                                    var avgSpd = Convert.ToString(JsonMediciones[lMediciones.Last()]);
+                                    /* Obtenemos el estado del cielo */
 
-                                    mediciones.velocidad = avgSpd;
-                                    
+                                    foreach (var dataWeather in tipoMedicion)
+                                    {
+
+                                        /* estamos frente a un Jarray de objetos Jobject */
+
+                                        if(dataWeather.Count > 1){
+
+                                            if(string.Equals(dataWeather[0]["main"].ToString() , "Mist", StringComparison.OrdinalIgnoreCase)){
+
+                                                mediciones.Estado = dataWeather[1]["main"].ToString();
+                                            }else{
+
+                                                mediciones.Estado = dataWeather[0]["main"].ToString();
+                                            }
+                                        }else{
+                                            mediciones.Estado = dataWeather[0]["main"].ToString();
+                                        }
+
+                                        
+                                    }
                                     
                                     break;
-                                case "max_speed":
+
+                                case "main":
                                     
-                                    /* obtenemos la última medición de la velocidad máxima del viento y guardamos el dato */
+                                    // obtenemos la temperatura y humedad
 
-                                    var MaxSpd = Convert.ToString(JsonMediciones[lMediciones.Last()]);
+                                    foreach (var dataWeather in tipoMedicion)
+                                    {
 
-                                    mediciones.velocidadMax = MaxSpd;
+                                        mediciones.Temperatura = dataWeather["temp"] - 273.15;
+
+                                        mediciones.Humedad = dataWeather["humidity"]; 
+
+                                    }
 
                                     break;
-                                case "temperature":
-                                    
-                                    /* obtenemos la última medición de la temperatura y guardamos el dato */
-                                    
-                                    var temp = Convert.ToString(JsonMediciones[lMediciones.Last()]);
 
-                                    mediciones.temperatura = temp;
+                                case "wind":
+                                    
+                                    // obtenemos la velocidad del viento
+
+                                    foreach (var dataWeather in tipoMedicion)
+                                    {
+
+                                        mediciones.VelViento = dataWeather["speed"];
+                                    }
 
                                     break;
-                                case "humidity":
-                                    
-                                    /* obtenemos la última medición de la humedad y guardamos el dato */
-                                    
-                                    var wet = Convert.ToString(JsonMediciones[lMediciones.Last()]);
-
-                                    mediciones.humedad = wet;
-
-                                    break;
-                                case "precipitation":
-
-                                    /* obtenemos la última medición de las precipitaciones y guardamos el dato */
-                                    
-                                    var precipitation = Convert.ToString(JsonMediciones[lMediciones.Last()]);
-
-                                    mediciones.precipitacion = precipitation;
-
-                                    break;
-                            }
-                            
-                            
-                        }
-                        
+                            }                         
+                                                
                     }
 
                     
@@ -304,31 +273,30 @@ namespace ProcesoBackend
 
                     if(!isEmpty(mediciones)){
 
-                        mediciones.Localidad = baliza.Localidad;
+                        mediciones.Localidad = baliza;
 
                             try{
 
 
-                                /* comprobamos si existen datos de mediciones en la localidad en la BDD */
+                                // comprobamos si existen datos de mediciones en la localidad en la BDD 
 
-                                var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == baliza.Localidad);
+                                var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == baliza);
 
 
                                 if(!DataExists){
 
-                                    var AddMediciones = new TemporalLocalidades { Localidad = mediciones.Localidad, Temperatura = Convert.ToDouble(mediciones.temperatura), VelViento = Convert.ToDouble(mediciones.velocidad), VelVientoMax = Convert.ToDouble(mediciones.velocidadMax), Precipitaciones = Convert.ToDouble(mediciones.precipitacion), Humedad =  Convert.ToDouble(mediciones.humedad)};
+                                    var AddMediciones = new TemporalLocalidades { Localidad = mediciones.Localidad, Estado = mediciones.Estado, Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2), VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2), Humedad =  Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2)};
                                     db.TemporalLocalidades.Add(AddMediciones);
                                     db.SaveChanges(); 
 
                                 }else{
 
-                                    var tupla = db.TemporalLocalidades.Where(tmp => tmp.Localidad == baliza.Localidad).Single();
+                                    var tupla = db.TemporalLocalidades.Where(tmp => tmp.Localidad == baliza).Single();
 
-                                    tupla.Temperatura = Convert.ToDouble(mediciones.temperatura);
-                                    tupla.VelViento = Convert.ToDouble(mediciones.velocidad);
-                                    tupla.VelVientoMax = Convert.ToDouble(mediciones.velocidadMax);
-                                    tupla.Precipitaciones = Convert.ToDouble(mediciones.precipitacion);
-                                    tupla.Humedad = Convert.ToDouble(mediciones.humedad);
+                                    tupla.Estado = mediciones.Estado;
+                                    tupla.Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2);
+                                    tupla.VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2);
+                                    tupla.Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2);
 
                                     db.SaveChanges(); 
                                 }
@@ -343,8 +311,9 @@ namespace ProcesoBackend
 
                         } else{
 
-                            Console.Write("La baliza de " + baliza.Baliza + " no tiene ninguna medición, puede que esté averiada\n");
+                            Console.Write("La baliza de " + baliza + " no tiene ninguna medición, puede que esté averiada\n");
                     }
+                    
                     
 
                 }catch(Exception ewe){
@@ -379,38 +348,6 @@ namespace ProcesoBackend
                 }
             }
             
-        }
-
-        /* función que devuelve el día de hoy */
-        static string getToday(){
-            DateTime Hoy = DateTime.Today;
-
-            if(Hoy.Day.ToString().Length == 1){
-
-                return "0" + Hoy.Day.ToString();
-            }
-
-            return Hoy.Day.ToString();
-        }
-
-        /* función que devuelve el mes actual */
-
-        static string getThisMonth(){
-            DateTime Hoy = DateTime.Today;
-
-            if(Hoy.Month.ToString().Length == 1){
-
-                return "0" + Hoy.Month.ToString();
-            }
-
-            return Hoy.Month.ToString();
-        }
-
-        /* función que que devuelve el año actual */
-        static string getThisYear(){
-            DateTime Hoy = DateTime.Today;
-
-            return Hoy.Year.ToString();
         }
 
         /* funcion que comprueba que la balizas tengan mediciones */

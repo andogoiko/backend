@@ -48,8 +48,6 @@ namespace BDD
     {
         [Key]
         public string Localidad { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string Baliza { get; set; }
         public double? Latitud { get; set; }
         public double? Longitud { get; set; }
 
@@ -65,10 +63,9 @@ namespace BDD
     {
         [Key, ForeignKey("LocalidadFK")]
         public string Localidad { get; set; }
+        public string? Estado { get; set; }
         public double? Temperatura { get; set; }
         public double? VelViento { get; set; }
-        public double? VelVientoMax { get; set; }
-        public double? Precipitaciones { get; set; }
         public double? Humedad { get; set; }
 
         [JsonIgnore]

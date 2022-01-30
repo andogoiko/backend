@@ -2,7 +2,7 @@
 
 namespace BDD.Migrations
 {
-    public partial class SeptuagesimaCreacionDeLaBDD : Migration
+    public partial class quadragesimanovenamigracion : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,7 +22,6 @@ namespace BDD.Migrations
                 columns: table => new
                 {
                     Localidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Baliza = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Latitud = table.Column<double>(type: "float", nullable: true),
                     Longitud = table.Column<double>(type: "float", nullable: true),
                     Provincia = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -43,9 +42,9 @@ namespace BDD.Migrations
                 columns: table => new
                 {
                     Localidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Temperatura = table.Column<double>(type: "float", nullable: true),
                     VelViento = table.Column<double>(type: "float", nullable: true),
-                    Precipitaciones = table.Column<double>(type: "float", nullable: true),
                     Humedad = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>

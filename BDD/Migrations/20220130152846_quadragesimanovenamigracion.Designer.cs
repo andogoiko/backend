@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDD.Migrations
 {
     [DbContext(typeof(BaseTempoContext))]
-    [Migration("20220128181629_quadragesimanovenamigracion")]
+    [Migration("20220130152846_quadragesimanovenamigracion")]
     partial class quadragesimanovenamigracion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,6 @@ namespace BDD.Migrations
                 {
                     b.Property<string>("Localidad")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Baliza")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Latitud")
                         .HasColumnType("float");
@@ -62,19 +58,16 @@ namespace BDD.Migrations
                     b.Property<string>("Localidad")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double?>("Humedad")
-                        .HasColumnType("float");
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Precipitaciones")
+                    b.Property<double?>("Humedad")
                         .HasColumnType("float");
 
                     b.Property<double?>("Temperatura")
                         .HasColumnType("float");
 
                     b.Property<double?>("VelViento")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("VelVientoMax")
                         .HasColumnType("float");
 
                     b.HasKey("Localidad");
