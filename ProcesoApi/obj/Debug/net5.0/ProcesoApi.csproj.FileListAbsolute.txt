@@ -270,7 +270,6 @@ C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\bin\Debug\net5.0\BDD.exe
 C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\bin\Debug\net5.0\BDD.dll
 C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\bin\Debug\net5.0\BDD.pdb
-C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\obj\Debug\net5.0\ProcesoApi.csproj.CopyComplete
 C:\Users\Ando\Desktop\backend\ProcesoApi\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Ando\Desktop\backend\ProcesoApi\bin\Debug\net5.0\appsettings.json
 C:\Users\Ando\Desktop\backend\ProcesoApi\bin\Debug\net5.0\BDD.deps.json

@@ -62,23 +62,26 @@ namespace ProcesoBackend
 
                 /* API balizas (openweather) */
 
-                 foreach (var baliza in balizas)
-                 {
-                     var APIBalizas = $"http://api.openweathermap.org/data/2.5/weather?q={baliza}&appid={token}";
-                     
-                     try{
+                foreach (var baliza in balizas)
+                {
+                    var APIBalizas = $"http://api.openweathermap.org/data/2.5/weather?q={baliza},ES&appid={token}";
+
+                    try
+                    {
 
                         var DeserialApiBalizas = await LecturaApi(APIBalizas, _cliente);
 
                         PushMediciones(DeserialApiBalizas, baliza);
 
-                     }catch(Exception awa){
+                    }
+                    catch (Exception awa)
+                    {
 
-                         Console.Write("Error, puede que esta baliza no contenga datos: " + awa + "\n");
+                        Console.Write("Error, puede que esta baliza no contenga datos: " + awa + "\n");
 
-                     }
+                    }
 
-                 }
+                }
 
                 /* Creando una lista de string sin localidades duplicadas */
 
@@ -98,7 +101,8 @@ namespace ProcesoBackend
         /* Tarea para leer APIs*/
         static async Task<dynamic> LecturaApi(string url, HttpClient cliente)
         {
-            try{
+            try
+            {
 
                 HttpResponseMessage ResAPIurl = await cliente.GetAsync(url);
                 var GetAPIurl = await ResAPIurl.Content.ReadAsStringAsync();
@@ -106,7 +110,9 @@ namespace ProcesoBackend
 
                 return urlDeserialJsonObj;
 
-            }catch(Exception owo){
+            }
+            catch (Exception owo)
+            {
 
                 Console.Write("La API que intenta leer está vacía\n");
 
@@ -183,7 +189,7 @@ namespace ProcesoBackend
                 {
 
                     Console.Write("Ha ocurrido un error en la base de datos:" + uwu + "\nContacte con su proveedor por favor.\n");
-                    
+
                 }
             }
 
@@ -204,119 +210,137 @@ namespace ProcesoBackend
 
             using (var db = new BaseTempoContext())
             {
-                try{
+                try
+                {
 
                     foreach (var tipoMedicion in datosBalizas)
                     {
 
-                        switch (tipoMedicion.Name.ToString()) 
-                            {
-                                case "weather":
+                        switch (tipoMedicion.Name.ToString())
+                        {
+                            case "weather":
 
-                                    /* Obtenemos el estado del cielo */
+                                /* Obtenemos el estado del cielo */
 
-                                    foreach (var dataWeather in tipoMedicion)
+                                foreach (var dataWeather in tipoMedicion)
+                                {
+
+                                    /* estamos frente a un Jarray de objetos Jobject */
+
+                                    if (dataWeather.Count > 1)
                                     {
 
-                                        /* estamos frente a un Jarray de objetos Jobject */
+                                        if (string.Equals(dataWeather[0]["main"].ToString(), "Mist", StringComparison.OrdinalIgnoreCase))
+                                        {
 
-                                        if(dataWeather.Count > 1){
+                                            mediciones.Estado = dataWeather[1]["main"].ToString();
+                                        }
+                                        else
+                                        {
 
-                                            if(string.Equals(dataWeather[0]["main"].ToString() , "Mist", StringComparison.OrdinalIgnoreCase)){
-
-                                                mediciones.Estado = dataWeather[1]["main"].ToString();
-                                            }else{
-
-                                                mediciones.Estado = dataWeather[0]["main"].ToString();
-                                            }
-                                        }else{
                                             mediciones.Estado = dataWeather[0]["main"].ToString();
                                         }
-
-                                        
                                     }
-                                    
-                                    break;
-
-                                case "main":
-                                    
-                                    // obtenemos la temperatura y humedad
-
-                                    foreach (var dataWeather in tipoMedicion)
+                                    else
                                     {
-
-                                        mediciones.Temperatura = dataWeather["temp"] - 273.15;
-
-                                        mediciones.Humedad = dataWeather["humidity"]; 
-
+                                        mediciones.Estado = dataWeather[0]["main"].ToString();
                                     }
 
-                                    break;
 
-                                case "wind":
-                                    
-                                    // obtenemos la velocidad del viento
+                                }
 
-                                    foreach (var dataWeather in tipoMedicion)
-                                    {
+                                break;
 
-                                        mediciones.VelViento = dataWeather["speed"];
-                                    }
+                            case "main":
 
-                                    break;
-                            }                         
-                                                
+                                // obtenemos la temperatura y humedad
+
+                                foreach (var dataWeather in tipoMedicion)
+                                {
+
+                                    mediciones.Temperatura = dataWeather["temp"] - 273.15;
+
+                                    mediciones.Humedad = dataWeather["humidity"];
+
+                                }
+
+                                break;
+
+                            case "wind":
+
+                                // obtenemos la velocidad del viento
+
+                                foreach (var dataWeather in tipoMedicion)
+                                {
+
+                                    mediciones.VelViento = dataWeather["speed"];
+                                }
+
+                                break;
+                        }
+
                     }
 
-                    
+
                     /* comprobamos si la baliza nos ha proporcionado todos los datos que queríamos */
 
-                    if(!isEmpty(mediciones)){
+                    if (!isEmpty(mediciones))
+                    {
 
                         mediciones.Localidad = baliza;
 
-                            try{
+                        try
+                        {
 
 
-                                // comprobamos si existen datos de mediciones en la localidad en la BDD 
+                            // comprobamos si existen datos de mediciones en la localidad en la BDD 
 
-                                var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == baliza);
+                            var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == baliza);
 
 
-                                if(!DataExists){
+                            if (!DataExists)
+                            {
 
-                                    var AddMediciones = new TemporalLocalidades { Localidad = mediciones.Localidad, Estado = mediciones.Estado, Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2), VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2), Humedad =  Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2)};
-                                    db.TemporalLocalidades.Add(AddMediciones);
-                                    db.SaveChanges(); 
+                                var AddMediciones = new TemporalLocalidades { Localidad = mediciones.Localidad, Estado = mediciones.Estado, Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2), VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2), Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2) };
+                                db.TemporalLocalidades.Add(AddMediciones);
+                                db.SaveChanges();
 
-                                }else{
+                            }
+                            else
+                            {
 
-                                    var tupla = db.TemporalLocalidades.Where(tmp => tmp.Localidad == baliza).Single();
+                                var tupla = db.TemporalLocalidades.Where(tmp => tmp.Localidad == baliza).Single();
 
-                                    tupla.Estado = mediciones.Estado;
-                                    tupla.Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2);
-                                    tupla.VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2);
-                                    tupla.Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2);
+                                tupla.Estado = mediciones.Estado;
+                                tupla.Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2);
+                                tupla.VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2);
+                                tupla.Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2);
 
-                                    db.SaveChanges(); 
-                                }
-
-                                
-
-                            }catch(Exception iwi){
-                                Console.Write("Ha ocurrido un error con la base de datos: " + iwi.InnerException.Message + "\n");
+                                db.SaveChanges();
                             }
 
-                            
 
-                        } else{
 
-                            Console.Write("La baliza de " + baliza + " no tiene ninguna medición, puede que esté averiada\n");
+                        }
+                        catch (Exception iwi)
+                        {
+                            Console.Write("Ha ocurrido un error con la base de datos: " + iwi.InnerException.Message + "\n");
+                        }
+
+
+
                     }
-                    
-                    
+                    else
+                    {
 
-                }catch(Exception ewe){
+                        Console.Write("La baliza de " + baliza + " no tiene ninguna medición, puede que esté averiada\n");
+                    }
+
+
+
+                }
+                catch (Exception ewe)
+                {
                     Console.Write("Ha ocurrido un error:" + ewe + "\nContacte con su proveedor por favor.\n");
                 }
             }
@@ -325,42 +349,50 @@ namespace ProcesoBackend
 
         /* función que elimina las localidades que no tengan mediciones */
 
-        static void cleanDB(List<string> localidades){
-            
+        static void cleanDB(List<string> localidades)
+        {
 
-            using (var db = new BaseTempoContext()){
-                try{
+
+            using (var db = new BaseTempoContext())
+            {
+                try
+                {
 
                     foreach (var localidad in localidades)
                     {
-                        
+
                         var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == localidad);
 
-                        if(!DataExists){
-                         
+                        if (!DataExists)
+                        {
+
                             var LocErrata = db.Localidades.Where(l => l.Localidad == localidad).Single();
                             db.Localidades.Remove(LocErrata);
                             db.SaveChanges();
                         }
                     }
-                }catch(Exception a){
+                }
+                catch (Exception a)
+                {
                     Console.Write("Ha ocurrido un error a la hora de limpiar la base de datos" + a.InnerException.Message + "\n");
                 }
             }
-            
+
         }
 
         /* funcion que comprueba que la balizas tengan mediciones */
-        static bool isEmpty(datosBaliza medicionesBaliza){
+        static bool isEmpty(datosBaliza medicionesBaliza)
+        {
 
-            foreach(PropertyDescriptor descriptor in TypeDescriptor.GetProperties(medicionesBaliza)) // https://stackoverflow.com/questions/852181/c-printing-all-properties-of-an-object
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(medicionesBaliza)) // https://stackoverflow.com/questions/852181/c-printing-all-properties-of-an-object
             {
-                if(descriptor.GetValue(medicionesBaliza) != null){
+                if (descriptor.GetValue(medicionesBaliza) != null)
+                {
                     return false;
                 }
             }
             return true;
-            
+
         }
 
     }

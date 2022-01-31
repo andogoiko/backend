@@ -293,3 +293,4 @@ C:\Users\Ando\Desktop\backend\ProcesoBackend\obj\Debug\net5.0\ProcesoBackend.dll
 C:\Users\Ando\Desktop\backend\ProcesoBackend\obj\Debug\net5.0\ref\ProcesoBackend.dll
 C:\Users\Ando\Desktop\backend\ProcesoBackend\obj\Debug\net5.0\ProcesoBackend.pdb
 C:\Users\Ando\Desktop\backend\ProcesoBackend\obj\Debug\net5.0\ProcesoBackend.genruntimeconfig.cache
+C:\Users\2daw3\Dev\AndoProyecto2\ProcesoBackend\obj\Debug\net5.0\ProcesoBackend.csproj.CopyComplete
