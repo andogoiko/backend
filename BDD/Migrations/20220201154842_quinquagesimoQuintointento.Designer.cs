@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDD.Migrations
 {
     [DbContext(typeof(BaseTempoContext))]
-    [Migration("20220131181244_quinquagesimoQuintointento")]
+    [Migration("20220201154842_quinquagesimoQuintointento")]
     partial class quinquagesimoQuintointento
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,11 +23,14 @@ namespace BDD.Migrations
 
             modelBuilder.Entity("BDD.Localidades", b =>
                 {
-                    b.Property<string>("Localidad")
+                    b.Property<string>("idBaliza")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double?>("Latitud")
                         .HasColumnType("float");
+
+                    b.Property<string>("Localidad")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Longitud")
                         .HasColumnType("float");
@@ -36,7 +39,7 @@ namespace BDD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Localidad");
+                    b.HasKey("idBaliza");
 
                     b.HasIndex("Provincia");
 
@@ -55,7 +58,7 @@ namespace BDD.Migrations
 
             modelBuilder.Entity("BDD.TemporalLocalidades", b =>
                 {
-                    b.Property<string>("Localidad")
+                    b.Property<string>("idBaliza")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Estado")
@@ -70,7 +73,7 @@ namespace BDD.Migrations
                     b.Property<double?>("VelViento")
                         .HasColumnType("float");
 
-                    b.HasKey("Localidad");
+                    b.HasKey("idBaliza");
 
                     b.ToTable("TemporalLocalidades");
                 });
@@ -117,7 +120,7 @@ namespace BDD.Migrations
                 {
                     b.HasOne("BDD.Localidades", "LocalidadFK")
                         .WithMany()
-                        .HasForeignKey("Localidad")
+                        .HasForeignKey("idBaliza")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

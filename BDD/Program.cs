@@ -48,6 +48,7 @@ namespace BDD
     public class Localidades
     {
         [Key]
+        public string idBaliza { get; set; }
         public string Localidad { get; set; }
         public double? Latitud { get; set; }
         public double? Longitud { get; set; }
@@ -63,7 +64,7 @@ namespace BDD
     public class TemporalLocalidades
     {
         [Key, ForeignKey("LocalidadFK")]
-        public string Localidad { get; set; }
+        public string idBaliza { get; set; }
         public string? Estado { get; set; }
         public double? Temperatura { get; set; }
         public double? VelViento { get; set; }
