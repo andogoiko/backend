@@ -7330,34 +7330,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\2daw3\\.nuget\\packages\\": {}
+    "C:\\Users\\Ando\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
+      "projectUniqueName": "C:\\Users\\Ando\\Desktop\\backend\\ProcesoApi\\ProcesoApi.csproj",
       "projectName": "ProcesoApi",
-      "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\ProcesoApi.csproj",
-      "packagesPath": "C:\\Users\\2daw3\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\ProcesoApi\\obj\\",
+      "projectPath": "C:\\Users\\Ando\\Desktop\\backend\\ProcesoApi\\ProcesoApi.csproj",
+      "packagesPath": "C:\\Users\\Ando\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Ando\\Desktop\\backend\\ProcesoApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\2daw3\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Ando\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj": {
-              "projectPath": "C:\\Users\\2daw3\\Dev\\AndoProyecto2\\BDD\\BDD.csproj"
+            "C:\\Users\\Ando\\Desktop\\backend\\BDD\\BDD.csproj": {
+              "projectPath": "C:\\Users\\Ando\\Desktop\\backend\\BDD\\BDD.csproj"
             }
           }
         }
@@ -7409,7 +7407,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

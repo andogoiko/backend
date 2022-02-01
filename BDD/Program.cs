@@ -20,6 +20,7 @@ namespace BDD
         public DbSet<Localidades> Localidades { get; set; }
 
         public DbSet<TemporalLocalidades> TemporalLocalidades { get; set; }
+        public DbSet<User> User { get; set; }
 
         public string connString { get; private set; }
 
@@ -71,6 +72,20 @@ namespace BDD
         [JsonIgnore]
         public virtual Localidades LocalidadFK { get; set; }
         //esta configuración para crear una relación 0:1 -> https://stackoverflow.com/questions/49305921/entity-framework-1-to-0-or-1-relationship-configuration
+    }
+
+    /* para la autenticación */
+
+    public class User
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
+        public string Role { get; set; }
+
+        /*[JsonIgnore]*/
+        public string Password { get; set; }
     }
 
 
