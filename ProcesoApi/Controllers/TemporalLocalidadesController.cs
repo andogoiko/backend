@@ -31,8 +31,7 @@ namespace ProcesoApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TemporalLocalidades>> GetTemporalLocalidades(string id)
         {
-            Console.WriteLine(id.Replace("%2F", "/"));
-            var temporalLocalidades = await _context.TemporalLocalidades.FindAsync(id.Replace("%2F", "/").Replace("%20", " "));
+            var temporalLocalidades = await _context.TemporalLocalidades.FindAsync(id);
 
             if (temporalLocalidades == null)
             {
@@ -45,7 +44,7 @@ namespace ProcesoApi.Controllers
 
         private bool TemporalLocalidadesExists(string id)
         {
-            return _context.TemporalLocalidades.Any(e => e.Localidad == id);
+            return _context.TemporalLocalidades.Any(e => e.idBaliza == id);
         }
     }
 }

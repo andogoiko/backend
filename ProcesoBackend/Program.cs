@@ -17,11 +17,18 @@ namespace ProcesoBackend
 {
     class datosBaliza
     {
+        public string idBaliza { get; set; }
         public string Localidad { get; set; }
         public string Estado { get; set; }
         public string Temperatura { get; set; }
         public string Humedad { get; set; }
         public string VelViento { get; set; }
+    }
+
+    class whoBaliza
+    {
+        public string idBaliza { get; set; }
+        public string Localidad { get; set; }
     }
 
     class Program
@@ -58,20 +65,25 @@ namespace ProcesoBackend
 
                 Console.Write("Actualizando la base de datos\n");
 
-                List<String> balizas = PushLocalidades(DeserialApiLocalidades);
+                List<whoBaliza> balizas = PushLocalidades(DeserialApiLocalidades);
+                
+
+                /* isntanciando una lista para añadirle las localidades introducidas y luego eliminar las sobrantes de la bdd */
+
+                List<string> areDupeBalizas = new List<string>();
 
                 /* API balizas (openweather) */
 
                 foreach (var baliza in balizas)
                 {
-                    var APIBalizas = $"http://api.openweathermap.org/data/2.5/weather?q={baliza},ES&appid={token}";
+                    var APIBalizas = $"http://api.openweathermap.org/data/2.5/weather?q={baliza.Localidad},ES&appid={token}";
 
                     try
                     {
 
                         var DeserialApiBalizas = await LecturaApi(APIBalizas, _cliente);
 
-                        PushMediciones(DeserialApiBalizas, baliza);
+                        areDupeBalizas.Add(PushMediciones(DeserialApiBalizas, baliza));
 
                     }
                     catch (Exception awa)
@@ -85,8 +97,7 @@ namespace ProcesoBackend
 
                 /* Creando una lista de string sin localidades duplicadas */
 
-                List<string> noDupeBalizas = balizas.Distinct()
-                                            .ToList();
+                List<string> noDupeBalizas = areDupeBalizas;
 
                 cleanDB(noDupeBalizas);
 
@@ -122,10 +133,10 @@ namespace ProcesoBackend
 
         /* función para introducir localidades en la BDD y a su vez devuelve un array de balizas */
 
-        static List<String> PushLocalidades(dynamic datosLocali)
+        static List<whoBaliza> PushLocalidades(dynamic datosLocali)
         {
 
-            List<String> Balizas = new List<String>();
+            List<whoBaliza> Balizas = new List<whoBaliza>();
 
             /* recorremos todas las localidades */
 
@@ -156,7 +167,7 @@ namespace ProcesoBackend
                             }
                         }
 
-                        /* comprobamos si alguna localidad está faltante */
+                        /* comprobamos si alguna localidad está faltante (ya que hay más de 1 baliza por localidad, filtro los datos que me llegan por localidad) */
 
                         data = localidad.municipality;
                         DataExists = db.Localidades.Any(p => p.Localidad == data);
@@ -166,14 +177,26 @@ namespace ProcesoBackend
                         if (localidad.province != "Navarra" && localidad.province != "Burgos")
                         {
 
-                            /* Añadiendo los datos necesarios al array que devolvemos */
+                            data = localidad.id;
 
-                            Balizas.Add(Convert.ToString(localidad.municipality));
+                            var isBaliza = db.Localidades.Any(p => p.idBaliza == data);
+
+                            if(isBaliza){
+
+                                /* Añadiendo los datos necesarios al array que devolvemos en la 2 iteración (cuando aún ya hay datos) */
+
+                                 Balizas.Add(new whoBaliza{ idBaliza = localidad.id , Localidad = Convert.ToString(localidad.municipality)});
+
+                            }
 
                             if (!DataExists)
                             {
 
-                                var AddLocalidad = new Localidades { Localidad = localidad.municipality, Latitud = localidad.y, Longitud = localidad.x, Provincia = localidad.province };
+                                /* Añadiendo los datos necesarios al array que devolvemos en la 1 iteración (cuando aún no hya datos) */
+
+                                 Balizas.Add(new whoBaliza{ idBaliza = localidad.id , Localidad = Convert.ToString(localidad.municipality)});
+
+                                var AddLocalidad = new Localidades { idBaliza = localidad.id, Localidad = localidad.municipality, Latitud = localidad.y, Longitud = localidad.x, Provincia = localidad.province };
                                 db.Localidades.Add(AddLocalidad);
                                 db.SaveChanges();
 
@@ -197,11 +220,12 @@ namespace ProcesoBackend
         }
 
         /* función que introduce los datos de las balizas en la BDD */
-        static void PushMediciones(dynamic datosBalizas, string baliza)
+        static string PushMediciones(dynamic datosBalizas, whoBaliza baliza)
         {
 
             var mediciones = new datosBaliza();
 
+            mediciones.idBaliza = null;
             mediciones.Localidad = null;
             mediciones.Estado = null;
             mediciones.Temperatura = null;
@@ -287,7 +311,8 @@ namespace ProcesoBackend
                     if (!isEmpty(mediciones))
                     {
 
-                        mediciones.Localidad = baliza;
+                        mediciones.idBaliza = baliza.idBaliza;
+                        mediciones.Localidad = baliza.Localidad;
 
                         try
                         {
@@ -295,13 +320,14 @@ namespace ProcesoBackend
 
                             // comprobamos si existen datos de mediciones en la localidad en la BDD 
 
-                            var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == baliza);
+
+                            var DataExists = db.TemporalLocalidades.Any(tmp => tmp.idBaliza == baliza.idBaliza);
 
 
                             if (!DataExists)
                             {
 
-                                var AddMediciones = new TemporalLocalidades { Localidad = mediciones.Localidad, Estado = mediciones.Estado, Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2), VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2), Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2) };
+                                var AddMediciones = new TemporalLocalidades { idBaliza = mediciones.idBaliza, Estado = mediciones.Estado, Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2), VelViento = Math.Round(Convert.ToDouble(mediciones.VelViento, System.Globalization.CultureInfo.InvariantCulture), 2), Humedad = Math.Round(Convert.ToDouble(mediciones.Humedad, System.Globalization.CultureInfo.InvariantCulture), 2) };
                                 db.TemporalLocalidades.Add(AddMediciones);
                                 db.SaveChanges();
 
@@ -309,7 +335,7 @@ namespace ProcesoBackend
                             else
                             {
 
-                                var tupla = db.TemporalLocalidades.Where(tmp => tmp.Localidad == baliza).Single();
+                                var tupla = db.TemporalLocalidades.Where(tmp => tmp.idBaliza == baliza.idBaliza).Single();
 
                                 tupla.Estado = mediciones.Estado;
                                 tupla.Temperatura = Math.Round(Convert.ToDouble(mediciones.Temperatura, System.Globalization.CultureInfo.InvariantCulture), 2);
@@ -319,6 +345,7 @@ namespace ProcesoBackend
                                 db.SaveChanges();
                             }
 
+                            return mediciones.idBaliza;
 
 
                         }
@@ -332,8 +359,8 @@ namespace ProcesoBackend
                     }
                     else
                     {
-
-                        Console.Write("La baliza de " + baliza + " no tiene ninguna medición, puede que esté averiada\n");
+                        return baliza.idBaliza;
+                        Console.Write("La baliza de " + baliza.Localidad + " (" + baliza.idBaliza + ") no tiene ninguna medición, puede que esté averiada\n");
                     }
 
 
@@ -344,6 +371,10 @@ namespace ProcesoBackend
                     Console.Write("Ha ocurrido un error:" + ewe + "\nContacte con su proveedor por favor.\n");
                 }
             }
+
+            /* si ha ocurrido algún error, este será el return */
+
+            return "error";
 
         }
 
@@ -361,12 +392,13 @@ namespace ProcesoBackend
                     foreach (var localidad in localidades)
                     {
 
-                        var DataExists = db.TemporalLocalidades.Any(tmp => tmp.Localidad == localidad);
+                        
 
-                        if (!DataExists)
+                        var DataExists = db.TemporalLocalidades.Any(tmp => tmp.idBaliza == localidad);
+
+                        if (!DataExists && localidad != "error")
                         {
-
-                            var LocErrata = db.Localidades.Where(l => l.Localidad == localidad).Single();
+                            var LocErrata = db.Localidades.Where(l => l.idBaliza == localidad).Single();
                             db.Localidades.Remove(LocErrata);
                             db.SaveChanges();
                         }
@@ -377,6 +409,8 @@ namespace ProcesoBackend
                     Console.Write("Ha ocurrido un error a la hora de limpiar la base de datos" + a.InnerException.Message + "\n");
                 }
             }
+
+          
 
         }
 

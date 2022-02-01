@@ -2,7 +2,7 @@
 
 namespace BDD.Migrations
 {
-    public partial class quadragesimanovenamigracion : Migration
+    public partial class quinquagesimoQuintointento : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,17 +18,35 @@ namespace BDD.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Localidades",
                 columns: table => new
                 {
-                    Localidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idBaliza = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Localidad = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitud = table.Column<double>(type: "float", nullable: true),
                     Longitud = table.Column<double>(type: "float", nullable: true),
                     Provincia = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Localidades", x => x.Localidad);
+                    table.PrimaryKey("PK_Localidades", x => x.idBaliza);
                     table.ForeignKey(
                         name: "FK_Localidades_Provincias_Provincia",
                         column: x => x.Provincia,
@@ -41,7 +59,7 @@ namespace BDD.Migrations
                 name: "TemporalLocalidades",
                 columns: table => new
                 {
-                    Localidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idBaliza = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Temperatura = table.Column<double>(type: "float", nullable: true),
                     VelViento = table.Column<double>(type: "float", nullable: true),
@@ -49,12 +67,12 @@ namespace BDD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TemporalLocalidades", x => x.Localidad);
+                    table.PrimaryKey("PK_TemporalLocalidades", x => x.idBaliza);
                     table.ForeignKey(
-                        name: "FK_TemporalLocalidades_Localidades_Localidad",
-                        column: x => x.Localidad,
+                        name: "FK_TemporalLocalidades_Localidades_idBaliza",
+                        column: x => x.idBaliza,
                         principalTable: "Localidades",
-                        principalColumn: "Localidad",
+                        principalColumn: "idBaliza",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -68,6 +86,9 @@ namespace BDD.Migrations
         {
             migrationBuilder.DropTable(
                 name: "TemporalLocalidades");
+
+            migrationBuilder.DropTable(
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Localidades");
