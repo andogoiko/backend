@@ -410,3 +410,4 @@ C:\Users\Ando\Desktop\backend\ProcesoApi\obj\Debug\net5.0\ProcesoApi.dll
 C:\Users\Ando\Desktop\backend\ProcesoApi\obj\Debug\net5.0\ref\ProcesoApi.dll
 C:\Users\Ando\Desktop\backend\ProcesoApi\obj\Debug\net5.0\ProcesoApi.pdb
 C:\Users\Ando\Desktop\backend\ProcesoApi\obj\Debug\net5.0\ProcesoApi.genruntimeconfig.cache
+C:\Users\2daw3\Dev\AndoProyecto2\ProcesoApi\obj\Debug\net5.0\ProcesoApi.csproj.CopyComplete
